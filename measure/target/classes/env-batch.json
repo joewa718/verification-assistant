@@ -1,0 +1,19 @@
+{
+  "spark": {
+    "log.level": "INFO",
+    "config": {
+      "spark.master": "local[*]"
+    }
+  },
+
+  "sinks": [
+    {
+      "type": "CONSOLE",
+      "config": {
+        "max.log.lines": 10
+      }
+    }
+  ],
+
+  "griffin.checkpoint": []
+}
