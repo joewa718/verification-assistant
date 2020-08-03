@@ -119,10 +119,7 @@ case class HdfsSink(config: Map[String, Any], metricName: String, timeStamp: Lon
     clearOldRecords(path)
     try {
       val recordCount = records.count
-
-      val count =
-        if (maxPersistLines < 0) recordCount else scala.math.min(maxPersistLines, recordCount)
-
+      val count = if (maxPersistLines < 0) recordCount else scala.math.min(maxPersistLines, recordCount)
       if (count > 0) {
         val groupCount = ((count - 1) / maxLinesPerFile + 1).toInt
         if (groupCount <= 1) {

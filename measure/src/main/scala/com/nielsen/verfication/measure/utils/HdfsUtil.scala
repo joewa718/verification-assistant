@@ -44,7 +44,7 @@ object HdfsUtil extends Loggable {
   def createFile(filePath: String): FSDataOutputStream = {
     implicit val path = new Path(filePath)
     if (getFS.exists(path)) getFS.delete(path, true)
-    return getFS.create(path)
+    getFS.create(path)
   }
 
   def appendOrCreateFile(filePath: String): FSDataOutputStream = {

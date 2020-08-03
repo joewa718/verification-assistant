@@ -61,8 +61,28 @@ class ParamJsonReaderSpec extends FlatSpec with Matchers{
 
   }
 
-  it should("application") in {
+  it should("verification_batch_sparksql") in {
     val args = Array("file:///Users/86189/IdeaProjects/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/86189/IdeaProjects/verification-assistant/measure/src/test/resources/verification_batch_sparksql.json")
+    Application.run(args)
+  }
+
+  it should("_completeness-batch-griffindsl.json") in {
+    val args = Array("file:///Users/86189/IdeaProjects/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/86189/IdeaProjects/verification-assistant/measure/src/test/resources/_completeness-batch-griffindsl.json")
+    Application.run(args)
+  }
+
+  it should("_distinctness-batch-griffindsl.json") in {
+    val args = Array("file:///Users/86189/IdeaProjects/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/86189/IdeaProjects/verification-assistant/measure/src/test/resources/_distinctness-batch-griffindsl.json")
+    Application.run(args)
+  }
+
+  it should("_timeliness-batch-griffindsl.json") in {
+    val args = Array("file:///Users/86189/IdeaProjects/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/86189/IdeaProjects/verification-assistant/measure/src/test/resources/_timeliness-batch-griffindsl.json")
+    Application.run(args)
+  }
+
+  it should("_uniqueness-batch-griffindsl.json") in {
+    val args = Array("file:///Users/86189/IdeaProjects/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/86189/IdeaProjects/verification-assistant/measure/src/test/resources/_uniqueness-batch-griffindsl.json")
     Application.run(args)
   }
 }

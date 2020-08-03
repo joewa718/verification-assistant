@@ -22,7 +22,6 @@ import com.nielsen.verfication.measure.configuration.dqdefinition.RuleAssertPara
 import com.nielsen.verfication.measure.context.DQContext
 import com.nielsen.verfication.measure.step.DQStep
 import com.nielsen.verfication.measure.step.builder.dsl.expr.{AssertEqual, AssertExpressParser, AssertIn}
-import com.nielsen.verfication.measure.step.builder.dsl.expr.AssertExpressParser.getAssertExp
 import com.nielsen.verfication.measure.utils.JsonUtil
 
 /**
@@ -34,7 +33,7 @@ case class AssertExpressionStep(name: String, assert: Seq[RuleAssertParam], inpu
     val metricMaps: Seq[Map[String, Any]] = getMetricMaps(context)
     assert.foreach(ruleAssertParam => {
       val expressSeq = ruleAssertParam.getAssertExpress()
-      val assertExpressParser = new AssertExpressParser()
+      val assertExpressParser =  AssertExpressParser()
       val assertExpressVo = expressSeq.get.map(express => assertExpressParser.getAssertExp(express))
       for (express <- assertExpressVo) {
         val result = express match {
