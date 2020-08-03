@@ -18,11 +18,10 @@ under the License.
 */
 package com.nielsen.verfication.measure.step.write
 
-import com.nielsen.verfication.measure.configuration.enums.{ArrayFlattenType, EntriesFlattenType, FlattenType, MapFlattenType, SimpleMode, TimestampMode}
+import com.nielsen.verfication.measure.configuration.enums._
 import com.nielsen.verfication.measure.context.DQContext
 import com.nielsen.verfication.measure.step.builder.ConstantColumns
 import com.nielsen.verfication.measure.utils.JsonUtil
-import com.nielsen.verfication.measure.configuration.enums._
 import com.nielsen.verfication.measure.utils.ParamUtil._
 
 /**
@@ -34,8 +33,8 @@ case class MetricWriteStep(name: String,
                            writeTimestampOpt: Option[Long] = None
                           ) extends WriteStep {
 
-  val emptyMetricMap = Map[Long, Map[String, Any]]()
-  val emptyMap = Map[String, Any]()
+  val emptyMetricMap: Map[Long, Map[String, Any]] = Map[Long, Map[String, Any]]()
+  val emptyMap: Map[String, Any] = Map[String, Any]()
 
   def execute(context: DQContext): Boolean = {
     val timestamp = writeTimestampOpt.getOrElse(context.contextId.timestamp)
@@ -72,21 +71,21 @@ case class MetricWriteStep(name: String,
 
   private def getMetricMaps(context: DQContext): Seq[Map[String, Any]] = {
     try {
-      val pdf = context.sqlContext.table(s"`${inputName}`")
+      val pdf = context.sqlContext.table(s"`$inputName`")
       val records = pdf.toJSON.collect()
-      if (records.size > 0) {
+      if (records.length > 0) {
         records.flatMap { rec =>
           try {
             val value = JsonUtil.toAnyMap(rec)
             Some(value)
           } catch {
-            case e: Throwable => None
+            case _: Throwable => None
           }
         }.toSeq
       } else Nil
     } catch {
       case e: Throwable =>
-        error(s"get metric ${name} fails", e)
+        error(s"get metric $name fails", e)
         Nil
     }
   }
@@ -95,11 +94,11 @@ case class MetricWriteStep(name: String,
                              ): Map[String, Any] = {
     flattenType match {
       case EntriesFlattenType => metrics.headOption.getOrElse(emptyMap)
-      case ArrayFlattenType => Map[String, Any]((name -> metrics))
+      case ArrayFlattenType => Map[String, Any](name -> metrics)
       case MapFlattenType => val v = metrics.headOption.getOrElse(emptyMap)
-        Map[String, Any]((name -> v))
+        Map[String, Any](name -> v)
       case _ =>
-        if (metrics.size > 1) Map[String, Any]((name -> metrics))
+        if (metrics.size > 1) Map[String, Any](name -> metrics)
         else metrics.headOption.getOrElse(emptyMap)
     }
   }

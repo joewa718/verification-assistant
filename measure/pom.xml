@@ -90,6 +90,7 @@
             <artifactId>mongo-scala-driver_2.11</artifactId>
             <version>${mongo.version}</version>
         </dependency>
+        
 
         <!--avro-->
         <dependency>

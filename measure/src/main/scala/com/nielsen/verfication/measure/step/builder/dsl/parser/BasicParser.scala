@@ -317,6 +317,7 @@ trait BasicParser extends JavaTokenParsers with Serializable {
   } | LBR ~ logicalExpression ~ RBR ~ opt(asAlias) ^^ {
     case _ ~ expr ~ _ ~ aliasOpt => LogicalFactorExpr(expr, true, aliasOpt)
   }
+
   def unaryLogicalExpression: Parser[LogicalExpr] = rep(LOGICAL_UNARY) ~ logicalFactor ^^ {
     case Nil ~ a => a
     case list ~ a => UnaryLogicalExpr(list, a)

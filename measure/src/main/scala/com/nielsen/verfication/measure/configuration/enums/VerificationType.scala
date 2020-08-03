@@ -16,19 +16,32 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package com.nielsen.verfication.measure.step.builder
+package com.nielsen.verfication.measure.configuration.enums
 
-import com.nielsen.verfication.measure.configuration.dqdefinition.RuleParam
-import com.nielsen.verfication.measure.context.DQContext
-import com.nielsen.verfication.measure.step.DQStep
-import com.nielsen.verfication.measure.step.transform.SparkSqlTransformStep
+import scala.util.matching.Regex
 
-case class SparkSqlDQStepBuilder() extends RuleParamStepBuilder {
+/**
+  * the strategy to flatten metric
+  */
+sealed trait VerificationType {
+  val idPattern: Regex
+  val desc: String
+}
 
-  def buildSteps(context: DQContext, ruleParam: RuleParam): Seq[DQStep] = {
-    val name = getStepName(ruleParam.getOutDfName())
-    val transformStep = SparkSqlTransformStep(name, ruleParam.getRule, ruleParam.getDetails, ruleParam.getCache)
-    transformStep +: (buildAssertSteps(ruleParam) ++ buildDirectWriteSteps(ruleParam))
+object VerificationType {
+  private val outputTypes: List[OutputType] = List(
+    MetricOutputType,
+    RecordOutputType,
+    DscUpdateOutputType,
+    UnknownOutputType
+  )
+
+  val default = UnknownOutputType
+  def apply(ptn: String): OutputType = {
+    outputTypes.find(tp => ptn match {
+      case tp.idPattern() => true
+      case _ => false
+    }).getOrElse(default)
   }
-
+  def unapply(pt: OutputType): Option[String] = Some(pt.desc)
 }

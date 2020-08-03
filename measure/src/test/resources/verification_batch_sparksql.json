@@ -22,6 +22,14 @@
         "dq.type": "verification",
         "out.dataframe.name": "prof",
         "rule": "select count(*) as `cnt`, count(distinct `post_code`) as `dis-cnt`, max(user_id) as `max` from source",
+        "assert": [
+          {
+            "express": [
+              "cnt = 50",
+              "dis-cnt = 1"
+            ]
+          }
+        ],
         "out": [
           {
             "type": "metric",
