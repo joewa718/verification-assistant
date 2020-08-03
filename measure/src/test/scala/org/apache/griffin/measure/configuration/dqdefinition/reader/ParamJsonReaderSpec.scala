@@ -71,6 +71,11 @@ class ParamJsonReaderSpec extends FlatSpec with Matchers{
     Application.run(args)
   }
 
+  it should("_accuracy-batch-griffindsl.json") in {
+    val args = Array("file:///Users/86189/IdeaProjects/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/86189/IdeaProjects/verification-assistant/measure/src/test/resources/_accuracy-batch-griffindsl.json")
+    Application.run(args)
+  }
+
   it should("_distinctness-batch-griffindsl.json") in {
     val args = Array("file:///Users/86189/IdeaProjects/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/86189/IdeaProjects/verification-assistant/measure/src/test/resources/_distinctness-batch-griffindsl.json")
     Application.run(args)
