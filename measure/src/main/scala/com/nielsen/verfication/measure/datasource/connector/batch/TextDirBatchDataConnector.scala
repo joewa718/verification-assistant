@@ -98,12 +98,4 @@ case class TextDirBatchDataConnector(@transient sparkSession: SparkSession,
     HdfsUtil.listSubPathsByType(dir, "file").filter(!_.startsWith(ignoreFilePrefix)).size == 0
   }
 
-//  def metaData(): Try[Iterable[(String, String)]] = {
-//    Try {
-//      val st = sqlContext.read.format("com.databricks.spark.avro").
-  //       load(concreteFileFullPath).schema
-//      st.fields.map(f => (f.name, f.dataType.typeName))
-//    }
-//  }
-
 }

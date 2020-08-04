@@ -42,16 +42,18 @@ import com.nielsen.verfication.measure.configuration.enums._
 import com.nielsen.verfication.measure.context._
 import com.nielsen.verfication.measure.utils.HdfsUtil
 
+import scala.collection.mutable.ArrayBuffer
 
-case class StreamingDQApp(allParam: GriffinConfig) extends DQApp {
+
+case class StreamingDQApp(allParam: GriffinConfig, messageSeq: ArrayBuffer[String]) extends DQApp {
 
   val envParam: EnvConfig = allParam.getEnvConfig
   val dqParam: DQConfig = allParam.getDqConfig
 
   val sparkParam = envParam.getSparkParam
   val metricName = dqParam.getName
-//  val dataSourceParams = dqParam.dataSources
-//  val dataSourceNames = dataSourceParams.map(_.name)
+  //  val dataSourceParams = dqParam.dataSources
+  //  val dataSourceNames = dataSourceParams.map(_.name)
   val sinkParams = getSinkParams
 
   var sqlContext: SQLContext = _
@@ -80,7 +82,7 @@ case class StreamingDQApp(allParam: GriffinConfig) extends DQApp {
     GriffinUDFAgent.register(sqlContext)
   }
 
-  def run: Try[Boolean] = Try {
+  def run: Try[(Boolean,DQContext)] = Try {
 
     // streaming context
     val ssc = StreamingContext.getOrCreate(sparkParam.getCpDir, () => {
@@ -103,7 +105,7 @@ case class StreamingDQApp(allParam: GriffinConfig) extends DQApp {
 
     // create dq context
     val globalContext: DQContext = DQContext(
-      contextId, metricName, dataSources, sinkParams, StreamingProcessType
+      contextId, metricName, dataSources, sinkParams, StreamingProcessType, messageSeq
     )(sparkSession)
 
     // start id
@@ -119,18 +121,14 @@ case class StreamingDQApp(allParam: GriffinConfig) extends DQApp {
     }
     val process = Scheduler(processInterval, dqCalculator)
     process.startup()
-
     ssc.start()
     ssc.awaitTermination()
     ssc.stop(stopSparkContext = true, stopGracefully = true)
-
     // clean context
     globalContext.clean()
-
     // finish
     globalContext.getSink().finish()
-
-    true
+    (true,globalContext)
   }
 
   def close: Try[_] = Try {
@@ -160,10 +158,10 @@ case class StreamingDQApp(allParam: GriffinConfig) extends DQApp {
 
 
   /**
-    *
-    * @param globalContext
-    * @param evaluateRuleParam
-    */
+   *
+   * @param globalContext
+   * @param evaluateRuleParam
+   */
   case class StreamingDQCalculator(globalContext: DQContext,
                                    evaluateRuleParam: EvaluateRuleParam
                                   ) extends Runnable with Loggable {
@@ -241,10 +239,10 @@ case class StreamingDQApp(allParam: GriffinConfig) extends DQApp {
 
 
   /**
-    *
-    * @param interval
-    * @param runnable
-    */
+   *
+   * @param interval
+   * @param runnable
+   */
   case class Scheduler(interval: Long, runnable: Runnable) {
 
     val pool: ThreadPoolExecutor = Executors.newFixedThreadPool(5).asInstanceOf[ThreadPoolExecutor]

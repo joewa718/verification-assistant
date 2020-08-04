@@ -16,21 +16,24 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package com.nielsen.verfication.measure.step.builder
+package com.nielsen.verfication.measure.step.builder.dsl.assertrule
 
-import com.nielsen.verfication.measure.configuration.dqdefinition.RuleParam
 import com.nielsen.verfication.measure.context.DQContext
-import com.nielsen.verfication.measure.step.DQStep
-import com.nielsen.verfication.measure.step.transform.DataFrameOpsTransformStep
 
-case class DataFrameOpsDQStepBuilder() extends RuleParamStepBuilder {
+/**
+ * generate accuracy assert steps
+ */
+case class AccuracyAssertDQSteps(context: DQContext) extends Assert2DQSteps {
 
-  def buildSteps(context: DQContext, ruleParam: RuleParam): Seq[DQStep] = {
-    val name = getStepName(ruleParam.getOutDfName())
-    val inputDfName = getStepName(ruleParam.getInDfName())
-    val transformStep = DataFrameOpsTransformStep(
-      name, inputDfName, ruleParam.getRule, ruleParam.getDetails, ruleParam.getCache)
-    transformStep +: buildDirectWriteSteps(ruleParam)
+  override def execute(context: DQContext): Boolean = {
+    context.metricWrapper.flush.foldLeft(true) { (ret, pair) =>
+      val (t, metric) = pair
+      val value = metric.get("value").get.asInstanceOf[Map[String, Any]]
+      val matchedFraction = value.get("matchedFraction").get.asInstanceOf[Double]
+      if (matchedFraction < 1) {
+        context.messageSeq.append(context.name + "-" + context.contextId.id)
+      }
+      true
+    }
   }
-
 }

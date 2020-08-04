@@ -1,0 +1,67 @@
+{
+  "name": "accu_batch",
+  "process.type": "batch",
+  "data.sources": [
+    {
+      "name": "source",
+      "baseline": true,
+      "connectors": [
+        {
+          "type": "avro",
+          "version": "1.7",
+          "dataframe.name": "this_table",
+          "config": {
+            "file.name": "src/test/resources/users_info_src.avro"
+          },
+          "pre.proc": [
+            {
+              "dsl.type": "spark-sql",
+              "rule": "select count(*) as `cnt`, count(distinct `post_code`) as `dis_cnt`, max(user_id) as `max` from this_table"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "target",
+      "connectors": [
+        {
+          "type": "expect",
+          "dataframe.name": "this_table",
+          "pre.proc": [
+            {
+              "dsl.type": "spark-sql",
+              "rule": "select '50' as `cnt`, '1' as `dis_cnt`, '10050' as `max` union select '50' as `cnt`, '1' as `dis_cnt`, '10050' as `max` union select '50' as `cnt`, '1' as `dis_cnt`, '10050' as `max` union select '50' as `cnt`, '1' as `dis_cnt`, '10050' as `max` "
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "evaluate.rule": {
+    "rules": [
+      {
+        "dsl.type": "griffin-dsl",
+        "dq.type": "accuracy",
+        "out.dataframe.name": "accu",
+        "rule": "source.cnt = target.cnt AND source.dis_cnt = target.dis_cnt AND source.max = target.max",
+        "details": {
+          "source": "source",
+          "target": "target",
+          "miss": "miss_count",
+          "total": "total_count",
+          "matched": "matched_count"
+        },
+        "out": [
+          {
+            "type": "record",
+            "name": "missRecords"
+          }
+        ]
+      }
+    ]
+  },
+  "sinks": [
+    "LOG","HDFS"
+  ]
+}

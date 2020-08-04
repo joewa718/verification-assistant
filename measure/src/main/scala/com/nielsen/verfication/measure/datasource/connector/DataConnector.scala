@@ -32,6 +32,8 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions._
 import com.nielsen.verfication.measure.context.ContextId
 
+import scala.collection.mutable.ArrayBuffer
+
 trait DataConnector extends Loggable with Serializable {
 
   val sparkSession: SparkSession
@@ -41,7 +43,9 @@ trait DataConnector extends Loggable with Serializable {
   val id: String = DataConnectorIdGenerator.genId
 
   val timestampStorage: TimestampStorage
+
   protected def saveTmst(t: Long) = timestampStorage.insert(t)
+
   protected def readTmst(t: Long) = timestampStorage.fromUntil(t, t + 1)
 
   def init(): Unit
@@ -50,43 +54,32 @@ trait DataConnector extends Loggable with Serializable {
   def data(ms: Long): (Option[DataFrame], TimeRange)
 
   private def createContext(t: Long): DQContext = {
-    DQContext(ContextId(t, id), id, Nil, Nil, BatchProcessType)(sparkSession)
+    DQContext(ContextId(t, id), id, Nil, Nil, BatchProcessType, new ArrayBuffer[String]())(sparkSession)
   }
 
   def preProcess(dfOpt: Option[DataFrame], ms: Long): Option[DataFrame] = {
     // new context
     val context = createContext(ms)
-
     val timestamp = context.contextId.timestamp
     val suffix = context.contextId.id
     val dcDfName = dcParam.getDataFrameName("this")
-
     try {
-      saveTmst(timestamp)    // save timestamp
-
+      saveTmst(timestamp) // save timestamp
       dfOpt.flatMap { df =>
-        val (preProcRules, thisTable) =
-          PreProcParamMaker.makePreProcRules(dcParam.getPreProcRules, suffix, dcDfName)
-
+        val (preProcRules, thisTable) = PreProcParamMaker.makePreProcRules(dcParam.getPreProcRules, suffix, dcDfName)
         // init data
         context.compileTableRegister.registerTable(thisTable)
         context.runTimeTableRegister.registerTable(thisTable, df)
-
         // build job
         val preprocJob = DQJobBuilder.buildDQJob(context, preProcRules)
-
         // job execute
         preprocJob.execute(context)
-
         // out data
         val outDf = context.sparkSession.table(s"`${thisTable}`")
-
         // add tmst column
         val withTmstDf = outDf.withColumn(ConstantColumns.tmst, lit(timestamp))
-
         // clean context
         context.clean()
-
         Some(withTmstDf)
       }
 

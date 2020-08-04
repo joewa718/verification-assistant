@@ -26,29 +26,32 @@ import com.nielsen.verfication.measure.step.builder.DQStepBuilder
 import com.nielsen.verfication.measure.step.write.MetricFlushStep
 import com.nielsen.verfication.measure.configuration.dqdefinition._
 import com.nielsen.verfication.measure.job._
+import com.nielsen.verfication.measure.step.builder.dsl.assertrule.Assert2DQSteps
 
 /**
-  * build dq job based on configuration
-  */
+ * build dq job based on configuration
+ */
 object DQJobBuilder {
 
   /**
-    * build dq job with rule param
-    * @param context              dq context
-    * @param evaluateRuleParam    evaluate rule param
-    * @return       dq job
-    */
+   * build dq job with rule param
+   *
+   * @param context           dq context
+   * @param evaluateRuleParam evaluate rule param
+   * @return dq job
+   */
   def buildDQJob(context: DQContext, evaluateRuleParam: EvaluateRuleParam): DQJob = {
     val ruleParams = evaluateRuleParam.getRules
     buildDQJob(context, ruleParams)
   }
 
   /**
-    * build dq job with rules in evaluate rule param or pre-proc param
-    * @param context          dq context
-    * @param ruleParams       rule params
-    * @return       dq job
-    */
+   * build dq job with rules in evaluate rule param or pre-proc param
+   *
+   * @param context    dq context
+   * @param ruleParams rule params
+   * @return dq job
+   */
   def buildDQJob(context: DQContext, ruleParams: Seq[RuleParam]): DQJob = {
     // build steps by datasources
     val dsSteps = context.dataSources.flatMap { dataSource =>
@@ -60,7 +63,6 @@ object DQJobBuilder {
     }
     // metric flush step
     val metricFlushStep = MetricFlushStep()
-
     job.DQJob(dsSteps ++ ruleSteps :+ metricFlushStep)
   }
 

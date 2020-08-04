@@ -22,7 +22,7 @@ import com.nielsen.verfication.measure.configuration.dqdefinition.RuleParam
 import com.nielsen.verfication.measure.configuration.enums.{DscUpdateOutputType, MetricOutputType, RecordOutputType}
 import com.nielsen.verfication.measure.context.DQContext
 import com.nielsen.verfication.measure.step.{DQStep, SeqDQStep}
-import com.nielsen.verfication.measure.step.write.{AssertExpressionStep, DataSourceUpdateWriteStep, MetricWriteStep, RecordWriteStep}
+import com.nielsen.verfication.measure.step.write.{DataSourceUpdateWriteStep, MetricWriteStep, RecordWriteStep}
 
 /**
  * build dq step by rule param
@@ -56,15 +56,5 @@ trait RuleParamStepBuilder extends DQStepBuilder {
     }.toSeq
     metricSteps ++ recordSteps ++ dsCacheUpdateSteps
   }
-
-  protected def buildAssertSteps(ruleParam: RuleParam): Seq[DQStep] = {
-    val asserts = ruleParam.getAsserts
-    val name = getStepName(ruleParam.getOutDfName())
-    val assertSteps = ruleParam.getOutputOpt(MetricOutputType).map { metric =>
-      AssertExpressionStep(metric.getNameOpt.getOrElse(name), asserts, name)
-    }.toSeq
-    assertSteps
-  }
-
 
 }

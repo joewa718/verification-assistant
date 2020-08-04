@@ -36,6 +36,7 @@ object DataConnectorFactory extends Loggable {
 
   val HiveRegex = """^(?i)hive$""".r
   val AvroRegex = """^(?i)avro$""".r
+  val ExpectRegex = """^(?i)expect$""".r
   val TextDirRegex = """^(?i)text-dir$""".r
 
   val KafkaRegex = """^(?i)kafka$""".r
@@ -64,6 +65,7 @@ object DataConnectorFactory extends Loggable {
         case HiveRegex() => HiveBatchDataConnector(sparkSession, dcParam, tmstCache)
         case AvroRegex() => AvroBatchDataConnector(sparkSession, dcParam, tmstCache)
         case TextDirRegex() => TextDirBatchDataConnector(sparkSession, dcParam, tmstCache)
+        case ExpectRegex() => ExpectDataConnector(sparkSession, dcParam, tmstCache)
         case CustomRegex() => getCustomConnector(sparkSession, ssc, dcParam, tmstCache, streamingCacheClientOpt)
         case KafkaRegex() =>
           getStreamingDataConnector(sparkSession, ssc, dcParam, tmstCache, streamingCacheClientOpt)

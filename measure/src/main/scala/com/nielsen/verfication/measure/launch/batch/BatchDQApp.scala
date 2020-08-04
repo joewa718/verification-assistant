@@ -35,16 +35,18 @@ import com.nielsen.verfication.measure.configuration.dqdefinition._
 import com.nielsen.verfication.measure.configuration.enums._
 import com.nielsen.verfication.measure.context._
 
+import scala.collection.mutable.ArrayBuffer
 
-case class BatchDQApp(allParam: GriffinConfig) extends DQApp {
+
+case class BatchDQApp(allParam: GriffinConfig, messageSeq: ArrayBuffer[String]) extends DQApp {
 
   val envParam: EnvConfig = allParam.getEnvConfig
   val dqParam: DQConfig = allParam.getDqConfig
 
   val sparkParam = envParam.getSparkParam
   val metricName = dqParam.getName
-//  val dataSourceParams = dqParam.dataSources
-//  val dataSourceNames = dataSourceParams.map(_.name)
+  //  val dataSourceParams = dqParam.dataSources
+  //  val dataSourceNames = dataSourceParams.map(_.name)
   val sinkParams = getSinkParams
 
   var sqlContext: SQLContext = _
@@ -62,12 +64,11 @@ case class BatchDQApp(allParam: GriffinConfig) extends DQApp {
     sparkSession = SparkSession.builder().config(conf).getOrCreate()
     sparkSession.sparkContext.setLogLevel(sparkParam.getLogLevel)
     sqlContext = sparkSession.sqlContext
-
     // register udf
     GriffinUDFAgent.register(sqlContext)
   }
 
-  def run: Try[Boolean] = Try {
+  def run: Try[(Boolean,DQContext)] = Try {
     // start time
     val startTime = new Date().getTime
     val measureTime = getMeasureTime
@@ -77,7 +78,7 @@ case class BatchDQApp(allParam: GriffinConfig) extends DQApp {
     dataSources.foreach(_.init)
     // create dq context
     val dqContext: DQContext = DQContext(
-      contextId, metricName, dataSources, sinkParams, BatchProcessType
+      contextId, metricName, dataSources, sinkParams, BatchProcessType, messageSeq
     )(sparkSession)
     // start id
     val applicationId = sparkSession.sparkContext.applicationId
@@ -93,7 +94,7 @@ case class BatchDQApp(allParam: GriffinConfig) extends DQApp {
     dqContext.clean()
     // finish
     dqContext.getSink().finish()
-    result
+    (result,dqContext)
   }
 
   def close: Try[_] = Try {

@@ -23,6 +23,7 @@ import com.nielsen.verfication.measure.configuration.dqdefinition.{DQConfig, Env
 
 import scala.util.Try
 import com.nielsen.verfication.measure.configuration.dqdefinition.SinkParam
+import com.nielsen.verfication.measure.context.DQContext
 
 
 /**
@@ -38,7 +39,7 @@ trait DQApp extends Loggable with Serializable {
   /**
     * @return execution success
     */
-  def run: Try[Boolean]
+  def run: Try[(Boolean,DQContext)]
 
   def close: Try[_]
 

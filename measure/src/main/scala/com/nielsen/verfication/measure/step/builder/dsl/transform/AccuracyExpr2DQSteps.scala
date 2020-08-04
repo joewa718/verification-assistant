@@ -19,20 +19,15 @@ under the License.
 package com.nielsen.verfication.measure.step.builder.dsl.transform
 
 import com.nielsen.verfication.measure.configuration.dqdefinition.RuleParam
-import com.nielsen.verfication.measure.configuration.enums.{BatchProcessType, DscUpdateOutputType, FlattenType, MetricOutputType, RecordOutputType, StreamingProcessType}
+import com.nielsen.verfication.measure.configuration.enums._
 import com.nielsen.verfication.measure.context.DQContext
 import com.nielsen.verfication.measure.step.builder.ConstantColumns
 import com.nielsen.verfication.measure.step.builder.dsl.expr.{Expr, LogicalExpr}
 import com.nielsen.verfication.measure.step.builder.dsl.transform.analyzer.AccuracyAnalyzer
-import com.nielsen.verfication.measure.step.transform.{DataFrameOps, DataFrameOpsTransformStep, SparkSqlTransformStep}
 import com.nielsen.verfication.measure.step.transform.DataFrameOps.AccuracyOprKeys
-import com.nielsen.verfication.measure.configuration.enums._
-import com.nielsen.verfication.measure.step.builder.dsl.expr._
-import com.nielsen.verfication.measure.step.transform.SparkSqlTransformStep
-import DataFrameOps.AccuracyOprKeys
-import com.nielsen.verfication.measure.step.{DQStep, write}
+import com.nielsen.verfication.measure.step.transform.{DataFrameOps, DataFrameOpsTransformStep, SparkSqlTransformStep}
 import com.nielsen.verfication.measure.step.write.{DataSourceUpdateWriteStep, MetricWriteStep, RecordWriteStep}
-import com.nielsen.verfication.measure.step.write.DataSourceUpdateWriteStep
+import com.nielsen.verfication.measure.step.{DQStep, write}
 import com.nielsen.verfication.measure.utils.ParamUtil._
 
 /**
@@ -42,7 +37,6 @@ case class AccuracyExpr2DQSteps(context: DQContext,
                                 expr: Expr,
                                 ruleParam: RuleParam
                                ) extends Expr2DQSteps {
-
   private object AccuracyKeys {
     val _source = "source"
     val _target = "target"
@@ -116,7 +110,6 @@ case class AccuracyExpr2DQSteps(context: DQContext,
             s"FROM `${missRecordsTableName}` GROUP BY `${ConstantColumns.tmst}`"
       }
       val missCountTransStep = SparkSqlTransformStep(missCountTableName, missCountSql, emptyMap)
-
       // 3. total count
       val totalCountTableName = "__totalCount"
       val totalColName = details.getStringOrKey(_total)
@@ -127,7 +120,6 @@ case class AccuracyExpr2DQSteps(context: DQContext,
             s"FROM `${sourceName}` GROUP BY `${ConstantColumns.tmst}`"
       }
       val totalCountTransStep = SparkSqlTransformStep(totalCountTableName, totalCountSql, emptyMap)
-
       // 4. accuracy metric
       val accuracyTableName = ruleParam.getOutDfName()
       val matchedColName = details.getStringOrKey(_matched)
@@ -155,6 +147,7 @@ case class AccuracyExpr2DQSteps(context: DQContext,
              |ON `${totalCountTableName}`.`${ConstantColumns.tmst}` = `${missCountTableName}`.`${ConstantColumns.tmst}`
          """.stripMargin
       }
+
       val accuracyTransStep = SparkSqlTransformStep(accuracyTableName, accuracyMetricSql, emptyMap)
       val accuracyMetricWriteSteps = procType match {
         case BatchProcessType =>
@@ -167,8 +160,7 @@ case class AccuracyExpr2DQSteps(context: DQContext,
 
       // accuracy current steps
       val transSteps1 = missRecordsTransStep :: missCountTransStep :: totalCountTransStep :: accuracyTransStep :: Nil
-      val writeSteps1 =
-        accuracyMetricWriteSteps ++ missRecordsWriteSteps ++ missRecordsUpdateWriteSteps
+      val writeSteps1 = accuracyMetricWriteSteps ++ missRecordsWriteSteps ++ missRecordsUpdateWriteSteps
 
       // streaming extra steps
       val (transSteps2, writeSteps2) = procType match {

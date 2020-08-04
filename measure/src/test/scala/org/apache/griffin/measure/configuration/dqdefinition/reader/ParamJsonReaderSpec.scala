@@ -22,6 +22,8 @@ import com.nielsen.verfication.measure.configuration.dqdefinition.DQConfig
 import com.nielsen.verfication.measure.configuration.dqdefinition.reader.{ParamJsonReader, ParamReader}
 import org.scalatest.{FlatSpec, Matchers}
 import com.nielsen.verfication.measure.Application
+
+import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 import scala.util.{Failure, Success}
 
@@ -42,7 +44,6 @@ class ParamJsonReaderSpec extends FlatSpec with Matchers{
       case Failure(_) =>
         fail("it should not happen")
     }
-
   }
 
   it should "fail for an invalid file" in {
@@ -62,26 +63,31 @@ class ParamJsonReaderSpec extends FlatSpec with Matchers{
   }
 
   it should("verification_batch_sparksql") in {
+    
     val args = Array("file:///Users/86189/IdeaProjects/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/86189/IdeaProjects/verification-assistant/measure/src/test/resources/verification_batch_sparksql.json")
     Application.run(args)
   }
 
   it should("_completeness-batch-griffindsl.json") in {
+    
     val args = Array("file:///Users/86189/IdeaProjects/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/86189/IdeaProjects/verification-assistant/measure/src/test/resources/_completeness-batch-griffindsl.json")
     Application.run(args)
   }
 
-  it should("_accuracy-batch-griffindsl.json") in {
-    val args = Array("file:///Users/86189/IdeaProjects/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/86189/IdeaProjects/verification-assistant/measure/src/test/resources/_accuracy-batch-griffindsl.json")
-    Application.run(args)
+  it should("_assert-batch-griffindsl.json") in {
+    val args = Array("file:///Users/86189/IdeaProjects/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/86189/IdeaProjects/verification-assistant/measure/src/test/resources/_assert-batch-griffindsl.json")
+    val messageSeq = Application.run(args)
+    println(messageSeq.mkString(","))
   }
 
   it should("_distinctness-batch-griffindsl.json") in {
+    
     val args = Array("file:///Users/86189/IdeaProjects/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/86189/IdeaProjects/verification-assistant/measure/src/test/resources/_distinctness-batch-griffindsl.json")
     Application.run(args)
   }
 
   it should("_timeliness-batch-griffindsl.json") in {
+    
     val args = Array("file:///Users/86189/IdeaProjects/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/86189/IdeaProjects/verification-assistant/measure/src/test/resources/_timeliness-batch-griffindsl.json")
     Application.run(args)
   }

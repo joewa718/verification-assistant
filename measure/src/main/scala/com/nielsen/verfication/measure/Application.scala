@@ -29,14 +29,18 @@ import scala.reflect.ClassTag
 import scala.util.{Failure, Success, Try}
 import com.nielsen.verfication.measure.configuration.dqdefinition.Param
 import com.nielsen.verfication.measure.configuration.enums._
+import com.nielsen.verfication.measure.context.DQContext
+import kafka.message.Message
+
+import scala.collection.mutable.ArrayBuffer
 
 
 /**
-  * application entrance
-  */
+ * application entrance
+ */
 object Application extends Loggable {
 
-  def run(args: Array[String]): Unit = {
+  def run(args: Array[String]): ArrayBuffer[String] = {
     if (args.length < 2) {
       error("Usage: class <env-param> <dq-param>")
       sys.exit(-1)
@@ -59,11 +63,12 @@ object Application extends Loggable {
         sys.exit(-2)
     }
     val allParam: GriffinConfig = GriffinConfig(envParam, dqParam)
+    val messageSeq = new ArrayBuffer[String]
     // choose process
     val procType = ProcessType(allParam.getDqConfig.getProcType)
     val dqApp: DQApp = procType match {
-      case BatchProcessType => batch.BatchDQApp(allParam)
-      case StreamingProcessType => streaming.StreamingDQApp(allParam)
+      case BatchProcessType => batch.BatchDQApp(allParam, messageSeq)
+      case StreamingProcessType => streaming.StreamingDQApp(allParam, messageSeq)
       case _ =>
         error(s"${procType} is unsupported process type!")
         sys.exit(-4)
@@ -79,14 +84,12 @@ object Application extends Loggable {
         sys.exit(-5)
     }
     // dq app run
-    val success = dqApp.run match {
-      case Success(result) =>
+    val (success,dqContext) = dqApp.run match {
+      case Success((result,dqContext)) =>
         info("process run result: " + (if (result) "success" else "failed"))
-        result
-
+        (result,dqContext)
       case Failure(ex) =>
         error(s"process run error: ${ex.getMessage}", ex)
-
         if (dqApp.retryable) {
           throw ex
         } else {
@@ -107,9 +110,10 @@ object Application extends Loggable {
     if (!success) {
       sys.exit(-5)
     }
+    dqContext.messageSeq
   }
 
-  private def readParamFile[T <: Param](file: String)(implicit m : ClassTag[T]): Try[T] = {
+  private def readParamFile[T <: Param](file: String)(implicit m: ClassTag[T]): Try[T] = {
     val paramReader = ParamReaderFactory.getParamReader(file)
     paramReader.readConfig[T]
   }

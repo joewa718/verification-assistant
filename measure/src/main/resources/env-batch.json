@@ -12,6 +12,12 @@
       "config": {
         "max.log.lines": 10
       }
+    },
+    {
+      "type": "HDFS",
+      "config": {
+        "path": "file:///D:/hdfs/"
+      }
     }
   ],
 

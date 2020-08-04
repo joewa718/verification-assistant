@@ -21,12 +21,13 @@ package org.apache.griffin.measure.transformations
 import com.holdenkarau.spark.testing.DataFrameSuiteBase
 import org.apache.spark.sql.DataFrame
 import org.scalatest._
-
 import com.nielsen.verfication.measure.configuration.dqdefinition._
 import com.nielsen.verfication.measure.configuration.enums.BatchProcessType
 import com.nielsen.verfication.measure.context.{ContextId, DQContext}
 import com.nielsen.verfication.measure.datasource.DataSourceFactory
 import com.nielsen.verfication.measure.job.builder.DQJobBuilder
+
+import scala.collection.mutable.ArrayBuffer
 
 case class AccuracyResult(total: Long, miss: Long, matched: Long, matchedFraction: Double)
 
@@ -164,7 +165,8 @@ class AccuracyTransformationsIntegrationTest extends FlatSpec with Matchers with
       name,
       dataSources,
       Nil,
-      BatchProcessType
+      BatchProcessType,
+      new ArrayBuffer[String]()
     )(spark)
   }
 

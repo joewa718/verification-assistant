@@ -17,18 +17,15 @@ specific language governing permissions and limitations
 under the License.
 */
 package com.nielsen.verfication.measure.step.write
-
 import com.nielsen.verfication.measure.context.DQContext
 
 /**
   * flush final metric map in context and write
-  */
+*/
 case class MetricFlushStep() extends WriteStep {
-
   val name: String = ""
   val inputName: String = ""
   val writeTimestampOpt: Option[Long] = None
-
   def execute(context: DQContext): Boolean = {
     context.metricWrapper.flush.foldLeft(true) { (ret, pair) =>
       val (t, metric) = pair

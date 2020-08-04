@@ -29,17 +29,20 @@ import com.nielsen.verfication.measure.configuration.enums._
 import com.nielsen.verfication.measure.datasource._
 import com.nielsen.verfication.measure.sink.Sink
 
+import scala.collection.mutable.ArrayBuffer
+
 /**
-  * dq context: the context of each calculation
-  * unique context id in each calculation
-  * access the same spark session this app created
-  */
+ * dq context: the context of each calculation
+ * unique context id in each calculation
+ * access the same spark session this app created
+ */
 case class DQContext(contextId: ContextId,
                      name: String,
                      dataSources: Seq[DataSource],
                      sinkParams: Seq[SinkParam],
-                     procType: ProcessType
-                    )(@transient implicit val sparkSession: SparkSession) extends Loggable{
+                     procType: ProcessType,
+                     messageSeq: ArrayBuffer[String]
+                    )(@transient implicit val sparkSession: SparkSession) extends Loggable {
 
   val sqlContext: SQLContext = sparkSession.sqlContext
 
@@ -62,6 +65,7 @@ case class DQContext(contextId: ContextId,
       case _ => others
     }
   }
+
   dataSourceNames.foreach(name => compileTableRegister.registerTable(name))
 
   def getDataSourceName(index: Int): String = {
@@ -99,7 +103,7 @@ case class DQContext(contextId: ContextId,
   }
 
   def cloneDQContext(newContextId: ContextId): DQContext = {
-    DQContext(newContextId, name, dataSources, sinkParams, procType)(sparkSession)
+    DQContext(newContextId, name, dataSources, sinkParams, procType, messageSeq)(sparkSession)
   }
 
   def clean(): Unit = {
