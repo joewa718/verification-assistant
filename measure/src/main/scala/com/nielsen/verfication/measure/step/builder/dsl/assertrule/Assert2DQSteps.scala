@@ -9,23 +9,28 @@ import com.nielsen.verfication.measure.step.DQStep
 trait Assert2DQSteps extends DQStep with Serializable {
   val name: String = ""
   protected val emtptDQSteps = Seq[DQStep]()
-  def execute(context: DQContext): Boolean
+  def execute(context: DQContext,ruleParam:RuleParam): Boolean
 }
 
 object Assert2DQSteps {
   private val emtptExpr2DQSteps = new Assert2DQSteps() {
-    override def execute(context: DQContext): Boolean = {
+    override def execute(context: DQContext,ruleParam:RuleParam): Boolean = {
       true
     }
 
     override val name: String = ""
+
+    /**
+     * @return execution success
+     */
+    override def execute(context: DQContext): Boolean = true
   }
 
   def apply(context: DQContext,
             ruleParam: RuleParam
            ): Assert2DQSteps = {
     ruleParam.getDqType match {
-      case AccuracyType => AccuracyAssertDQSteps(context)
+      case AccuracyType => AccuracyAssertDQSteps(context,ruleParam)
       case _ => emtptExpr2DQSteps
     }
   }

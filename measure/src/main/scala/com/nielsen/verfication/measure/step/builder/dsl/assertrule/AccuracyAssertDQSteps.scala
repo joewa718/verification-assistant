@@ -18,22 +18,30 @@ under the License.
 */
 package com.nielsen.verfication.measure.step.builder.dsl.assertrule
 
+import com.nielsen.verfication.measure.configuration.dqdefinition.RuleParam
 import com.nielsen.verfication.measure.context.DQContext
 
 /**
  * generate accuracy assert steps
  */
-case class AccuracyAssertDQSteps(context: DQContext) extends Assert2DQSteps {
+case class AccuracyAssertDQSteps(context: DQContext, ruleParam: RuleParam) extends Assert2DQSteps {
 
-  override def execute(context: DQContext): Boolean = {
+  override def execute(context: DQContext, ruleParam: RuleParam): Boolean = {
     context.metricWrapper.flush.foldLeft(true) { (ret, pair) =>
       val (t, metric) = pair
       val value = metric.get("value").get.asInstanceOf[Map[String, Any]]
       val matchedFraction = value.get("matchedFraction").get.asInstanceOf[Double]
       if (matchedFraction < 1) {
-        context.messageSeq.append(context.name + "-" + context.contextId.id)
+        context.messageSeq.append(context.name + "-" + context.contextId.id + "-" + ruleParam.getOutDfName())
       }
       true
     }
+  }
+
+  /**
+   * @return execution success
+   */
+  override def execute(context: DQContext): Boolean = {
+    true
   }
 }

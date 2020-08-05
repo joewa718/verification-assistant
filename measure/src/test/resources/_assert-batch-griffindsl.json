@@ -31,7 +31,7 @@
           "pre.proc": [
             {
               "dsl.type": "spark-sql",
-              "rule": "select '50' as `cnt`, '1' as `dis_cnt`, '10050' as `max` union select '50' as `cnt`, '1' as `dis_cnt`, '10050' as `max` union select '50' as `cnt`, '1' as `dis_cnt`, '10050' as `max` union select '50' as `cnt`, '1' as `dis_cnt`, '10050' as `max` "
+              "rule": "select '49' as `cnt`, '0' as `dis_cnt`, '10050' as `max`"
             }
           ]
         }
@@ -43,8 +43,27 @@
       {
         "dsl.type": "griffin-dsl",
         "dq.type": "accuracy",
-        "out.dataframe.name": "accu",
-        "rule": "source.cnt = target.cnt AND source.dis_cnt = target.dis_cnt AND source.max = target.max",
+        "out.dataframe.name": "accu1",
+        "rule": "source.cnt = target.cnt",
+        "details": {
+          "source": "source",
+          "target": "target",
+          "miss": "miss_count",
+          "total": "total_count",
+          "matched": "matched_count"
+        },
+        "out": [
+          {
+            "type": "record",
+            "name": "missRecords"
+          }
+        ]
+      },
+      {
+        "dsl.type": "griffin-dsl",
+        "dq.type": "accuracy",
+        "out.dataframe.name": "accu2",
+        "rule": "source.dis_cnt = target.dis_cnt",
         "details": {
           "source": "source",
           "target": "target",
