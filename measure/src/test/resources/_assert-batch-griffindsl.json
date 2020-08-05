@@ -36,6 +36,27 @@
           ]
         }
       ]
+    },
+    {
+      "name": "target1",
+      "connectors": [
+        {
+          "type": "text-dir",
+          "dataframe.name": "this_table",
+          "config": {
+            "dir.path": "file:///Users/zhanwa01/expect/",
+            "data.dir.depth": 0,
+            "success.file": "_SUCCESS",
+            "done.file": "_DONE"
+          },
+          "pre.proc": [
+            {
+              "dsl.type": "spark-sql",
+              "rule": "select `max` from this_table"
+            }
+          ]
+        }
+      ]
     }
   ],
   "evaluate.rule": {
@@ -63,10 +84,10 @@
         "dsl.type": "griffin-dsl",
         "dq.type": "accuracy",
         "out.dataframe.name": "accu2",
-        "rule": "source.dis_cnt = target.dis_cnt",
+        "rule": "source.max = target1.max",
         "details": {
           "source": "source",
-          "target": "target",
+          "target": "target1",
           "miss": "miss_count",
           "total": "total_count",
           "matched": "matched_count"
@@ -81,6 +102,6 @@
     ]
   },
   "sinks": [
-    "LOG","HDFS"
+    "LOG"
   ]
 }

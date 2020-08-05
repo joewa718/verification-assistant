@@ -33,7 +33,6 @@ case class SparkSqlTransformStep(name: String,
     val sqlContext = context.sqlContext
     try {
       val df = sqlContext.sql(rule)
-      df.show()
       if (cache) context.dataFrameCache.cacheDataFrame(name, df)
       context.runTimeTableRegister.registerTable(name, df)
       true

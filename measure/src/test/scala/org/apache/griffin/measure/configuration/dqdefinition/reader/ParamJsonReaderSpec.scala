@@ -18,10 +18,12 @@ under the License.
 */
 package org.apache.griffin.measure.configuration.dqdefinition.reader
 
+import com.nielsen.verfication.measure.Launcher.warn
 import com.nielsen.verfication.measure.configuration.dqdefinition.DQConfig
 import com.nielsen.verfication.measure.configuration.dqdefinition.reader.{ParamJsonReader, ParamReader}
 import org.scalatest.{FlatSpec, Matchers}
-import com.nielsen.verfication.measure.Application
+import com.nielsen.verfication.measure.{Application, Launcher}
+import com.nielsen.verfication.measure.utils.HdfsUtil
 
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
@@ -91,6 +93,19 @@ class ParamJsonReaderSpec extends FlatSpec with Matchers{
   it should("_uniqueness-batch-griffindsl.json") in {
     val args = Array("file:///Users/zhanwa01/git-hub/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/zhanwa01/git-hub/verification-assistant/measure/src/test/resources/_uniqueness-batch-griffindsl.json")
     Application.run(args)
+  }
+
+  it should ("Launcher") in {
+    val messageSeq = new ArrayBuffer[String]
+    val configs = HdfsUtil.listSubPathsByType("file:///Users/zhanwa01/git-hub/verification-assistant/measure/src/test/resources/", "file", true).filter(path => path.contains("_assert-batch-griffindsl.json"))
+    configs.foreach(config => {
+      val args = Array("file:///Users/zhanwa01/git-hub/verification-assistant/measure/src/main/resources/env-batch.json", config)
+      val messages = Application.run(args)
+      messageSeq :+ messages
+    })
+    messageSeq.foreach(message => {
+      info(message)
+    })
   }
 }
 

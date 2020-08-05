@@ -1,6 +1,6 @@
 {
   "spark": {
-    "log.level": "WARN",
+    "log.level": "INFO",
     "config": {
       "spark.master": "local[*]"
     }
@@ -8,9 +8,15 @@
 
   "sinks": [
     {
-      "type": "console",
+      "type": "CONSOLE",
       "config": {
         "max.log.lines": 10
+      }
+    },
+    {
+      "type": "HDFS",
+      "config": {
+        "path": "file:///C:/hdfs/"
       }
     }
   ],

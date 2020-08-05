@@ -55,12 +55,9 @@ case class TextDirBatchDataConnector(@transient sparkSession: SparkSession,
     val dfOpt = try {
       val dataDirs = listSubDirs(dirPath :: Nil, dataDirDepth, readable)
       // touch done file for read dirs
-      dataDirs.foreach(dir => touchDone(dir))
-
       val validDataDirs = dataDirs.filter(dir => !emptyDir(dir))
-
       if (validDataDirs.nonEmpty) {
-        val df = sparkSession.read.text(validDataDirs: _*)
+        val df = sparkSession.read.option("header",true).csv(validDataDirs: _*)
         val dfOpt = Some(df)
         val preDfOpt = preProcess(dfOpt, ms)
         preDfOpt
@@ -87,9 +84,7 @@ case class TextDirBatchDataConnector(@transient sparkSession: SparkSession,
     }
   }
 
-  private def readable(dir: String): Boolean = isSuccess(dir) && !isDone(dir)
-  private def isDone(dir: String): Boolean = HdfsUtil.existFileInDir(dir, doneFile)
-  private def isSuccess(dir: String): Boolean = HdfsUtil.existFileInDir(dir, successFile)
+  private def readable(dir: String): Boolean = true
 
   private def touchDone(dir: String): Unit =
     HdfsUtil.createEmptyFile(HdfsUtil.getHdfsFilePath(dir, doneFile))
