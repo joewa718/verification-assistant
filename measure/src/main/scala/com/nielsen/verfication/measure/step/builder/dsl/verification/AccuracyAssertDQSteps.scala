@@ -16,7 +16,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 */
-package com.nielsen.verfication.measure.step.builder.dsl.assertrule
+package com.nielsen.verfication.measure.step.builder.dsl.verification
 
 import com.nielsen.verfication.measure.configuration.dqdefinition.RuleParam
 import com.nielsen.verfication.measure.context.DQContext
@@ -26,7 +26,7 @@ import com.nielsen.verfication.measure.context.DQContext
  */
 case class AccuracyAssertDQSteps(context: DQContext, ruleParam: RuleParam) extends Assert2DQSteps {
 
-  override def execute(context: DQContext, ruleParam: RuleParam): Boolean = {
+  override def execute(context: DQContext): Boolean = {
     context.metricWrapper.flush.foldLeft(true) { (ret, pair) =>
       val (t, metric) = pair
       val value = metric.get("value").get.asInstanceOf[Map[String, Any]]
@@ -36,12 +36,5 @@ case class AccuracyAssertDQSteps(context: DQContext, ruleParam: RuleParam) exten
       }
       true
     }
-  }
-
-  /**
-   * @return execution success
-   */
-  override def execute(context: DQContext): Boolean = {
-    true
   }
 }

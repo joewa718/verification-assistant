@@ -26,7 +26,7 @@ import com.nielsen.verfication.measure.step.builder.DQStepBuilder
 import com.nielsen.verfication.measure.step.write.MetricFlushStep
 import com.nielsen.verfication.measure.configuration.dqdefinition._
 import com.nielsen.verfication.measure.job._
-import com.nielsen.verfication.measure.step.builder.dsl.assertrule.Assert2DQSteps
+import com.nielsen.verfication.measure.step.builder.dsl.verification.Assert2DQSteps
 
 /**
  * build dq job based on configuration

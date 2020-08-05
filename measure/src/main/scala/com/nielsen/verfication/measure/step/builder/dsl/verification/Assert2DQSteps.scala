@@ -1,4 +1,4 @@
-package com.nielsen.verfication.measure.step.builder.dsl.assertrule
+package com.nielsen.verfication.measure.step.builder.dsl.verification
 
 import com.nielsen.verfication.measure.Loggable
 import com.nielsen.verfication.measure.configuration.dqdefinition.RuleParam
@@ -9,21 +9,16 @@ import com.nielsen.verfication.measure.step.DQStep
 trait Assert2DQSteps extends DQStep with Serializable {
   val name: String = ""
   protected val emtptDQSteps = Seq[DQStep]()
-  def execute(context: DQContext,ruleParam:RuleParam): Boolean
+  def execute(context: DQContext): Boolean
 }
 
 object Assert2DQSteps {
   private val emtptExpr2DQSteps = new Assert2DQSteps() {
-    override def execute(context: DQContext,ruleParam:RuleParam): Boolean = {
+    override def execute(context: DQContext): Boolean = {
       true
     }
 
     override val name: String = ""
-
-    /**
-     * @return execution success
-     */
-    override def execute(context: DQContext): Boolean = true
   }
 
   def apply(context: DQContext,

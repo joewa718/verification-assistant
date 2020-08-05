@@ -21,7 +21,7 @@ package com.nielsen.verfication.measure.step.builder
 import com.nielsen.verfication.measure.configuration.dqdefinition.RuleParam
 import com.nielsen.verfication.measure.context.DQContext
 import com.nielsen.verfication.measure.step.DQStep
-import com.nielsen.verfication.measure.step.builder.dsl.assertrule.Assert2DQSteps
+import com.nielsen.verfication.measure.step.builder.dsl.verification.Assert2DQSteps
 import com.nielsen.verfication.measure.step.builder.dsl.parser.GriffinDslParser
 import com.nielsen.verfication.measure.step.builder.dsl.transform.Expr2DQSteps
 

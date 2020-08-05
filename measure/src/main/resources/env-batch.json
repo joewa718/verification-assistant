@@ -16,7 +16,7 @@
     {
       "type": "HDFS",
       "config": {
-        "path": "file:///D:/hdfs/"
+        "path": "file:///C:/hdfs/"
       }
     }
   ],

@@ -31,7 +31,7 @@
           "pre.proc": [
             {
               "dsl.type": "spark-sql",
-              "rule": "select '49' as `cnt`, '0' as `dis_cnt`, '10050' as `max`"
+              "rule": "select '50' as `cnt`, '0' as `dis_cnt`, '10050' as `max`"
             }
           ]
         }
