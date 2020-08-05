@@ -63,13 +63,11 @@ class ParamJsonReaderSpec extends FlatSpec with Matchers{
   }
 
   it should("verification_batch_sparksql") in {
-    
     val args = Array("file:///Users/zhanwa01/git-hub/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/zhanwa01/git-hub/verification-assistant/measure/src/test/resources/verification_batch_sparksql.json")
     Application.run(args)
   }
 
   it should("_completeness-batch-griffindsl.json") in {
-    
     val args = Array("file:///Users/zhanwa01/git-hub/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/zhanwa01/git-hub/verification-assistant/measure/src/test/resources/_completeness-batch-griffindsl.json")
     Application.run(args)
   }
@@ -81,13 +79,11 @@ class ParamJsonReaderSpec extends FlatSpec with Matchers{
   }
 
   it should("_distinctness-batch-griffindsl.json") in {
-    
     val args = Array("file:///Users/zhanwa01/git-hub/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/zhanwa01/git-hub/verification-assistant/measure/src/test/resources/_distinctness-batch-griffindsl.json")
     Application.run(args)
   }
 
   it should("_timeliness-batch-griffindsl.json") in {
-    
     val args = Array("file:///Users/zhanwa01/git-hub/verification-assistant/measure/src/main/resources/env-batch.json","file:///Users/zhanwa01/git-hub/verification-assistant/measure/src/test/resources/_timeliness-batch-griffindsl.json")
     Application.run(args)
   }
