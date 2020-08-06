@@ -16,7 +16,7 @@
     {
       "type": "HDFS",
       "config": {
-        "path": "file:///C:/hdfs/"
+        "path": "file:///Users/zhanwa01/hdfs/report_record/"
       }
     }
   ],

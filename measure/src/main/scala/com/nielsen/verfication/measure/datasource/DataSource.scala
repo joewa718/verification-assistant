@@ -28,12 +28,13 @@ import com.nielsen.verfication.measure.context.DQContext
 import com.nielsen.verfication.measure.utils.DataFrameUtil._
 
 /**
-  * data source
-  * @param name     name of data source
-  * @param dsParam  param of this data source
-  * @param dataConnectors       list of data connectors
-  * @param streamingCacheClientOpt   streaming data cache client option
-  */
+ * data source
+ *
+ * @param name                    name of data source
+ * @param dsParam                 param of this data source
+ * @param dataConnectors          list of data connectors
+ * @param streamingCacheClientOpt streaming data cache client option
+ */
 case class DataSource(name: String,
                       dsParam: DataSourceParam,
                       dataConnectors: Seq[DataConnector],
@@ -54,7 +55,8 @@ case class DataSource(name: String,
       case Some(df) =>
         context.runTimeTableRegister.registerTable(name, df)
       case None =>
-        warn(s"load data source [${name}] fails")
+        val msg = s"load data source [${name}] fails"
+        throw new RuntimeException(msg)
     }
     timeRange
   }

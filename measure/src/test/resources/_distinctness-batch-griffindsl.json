@@ -6,26 +6,12 @@
   "data.sources": [
     {
       "name": "source",
-      "baseline": true,
       "connectors": [
         {
-          "type": "avro",
-          "version": "1.7",
+          "type": "text-dir",
           "config": {
-            "file.name": "src/test/resources/users_info_src.avro"
-          }
-        }
-      ]
-    },
-    {
-      "name": "target",
-      "baseline": true,
-      "connectors": [
-        {
-          "type": "avro",
-          "version": "1.7",
-          "config": {
-            "file.name": "src/test/resources/users_info_src.avro"
+            "dir.path": "file:///Users/zhanwa01/hdfs/expect/distinctness/",
+            "data.dir.depth": 0
           }
         }
       ]
@@ -41,7 +27,6 @@
         "rule": "user_id",
         "details": {
           "source": "source",
-          "target": "target",
           "total": "total",
           "distinct": "distinct",
           "dup": "dup",
@@ -58,5 +43,5 @@
     ]
   },
 
-  "sinks": ["CONSOLE","ELASTICSEARCH"]
+  "sinks": ["LOG","HDFS"]
 }

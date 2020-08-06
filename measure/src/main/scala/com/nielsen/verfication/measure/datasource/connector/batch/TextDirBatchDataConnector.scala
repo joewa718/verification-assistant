@@ -76,7 +76,7 @@ case class TextDirBatchDataConnector(@transient sparkSession: SparkSession,
   private def listSubDirs(paths: Seq[String],
                           depth: Int,
                           filteFunc: (String) => Boolean): Seq[String] = {
-    val subDirs = paths.flatMap { path => HdfsUtil.listSubPathsByType(path, "dir", true) }
+    val subDirs = paths.flatMap { path => HdfsUtil.listSubPathsByType(path, "file", true) }
     if (depth <= 0) {
       subDirs.filter(filteFunc)
     } else {

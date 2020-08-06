@@ -1,5 +1,5 @@
 {
-  "name": "accu_batch",
+  "name": "accu_batch2",
   "process.type": "batch",
   "data.sources": [
     {
@@ -44,7 +44,7 @@
           "type": "text-dir",
           "dataframe.name": "this_table",
           "config": {
-            "dir.path": "file:///Users/zhanwa01/expect/",
+            "dir.path": "file:///Users/zhanwa01/hdfs/expect/accuracy/",
             "data.dir.depth": 0,
             "success.file": "_SUCCESS",
             "done.file": "_DONE"
