@@ -31,7 +31,7 @@ case class DistinctnessAssertDQSteps(context: DQContext, ruleParam: RuleParam) e
       val (t, metric) = pair
       val value = metric.get("value").get.asInstanceOf[Map[String, Any]]
       val total = value.get("total").get.asInstanceOf[Int]
-      val distinct = value.get("total").get.asInstanceOf[Int]
+      val distinct = value.get("distinct").get.asInstanceOf[Int]
       if (total != distinct) {
         context.messageSeq.append(context.name + "-" + context.contextId.id + "-" + ruleParam.getOutDfName())
       }

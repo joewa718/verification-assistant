@@ -22,23 +22,34 @@ import com.nielsen.verfication.measure.configuration.dqdefinition.reader.ParamRe
 import com.nielsen.verfication.measure.configuration.dqdefinition.{DQConfig, EnvConfig, GriffinConfig, Param}
 import com.nielsen.verfication.measure.configuration.enums.{BatchProcessType, ProcessType, StreamingProcessType}
 import com.nielsen.verfication.measure.launch.{DQApp, batch, streaming}
-import com.nielsen.verfication.measure.launch.batch.BatchDQApp
-import com.nielsen.verfication.measure.launch.streaming.StreamingDQApp
-
+import com.nielsen.verfication.measure.utils.HdfsUtil
+import scala.collection.mutable.ArrayBuffer
 import scala.reflect.ClassTag
 import scala.util.{Failure, Success, Try}
-import com.nielsen.verfication.measure.configuration.dqdefinition.Param
-import com.nielsen.verfication.measure.configuration.enums._
-import com.nielsen.verfication.measure.context.DQContext
-import kafka.message.Message
-
-import scala.collection.mutable.ArrayBuffer
 
 
 /**
  * application entrance
  */
 object Application extends Loggable {
+
+  def main(args: Array[String]): Unit = {
+    val config = args(0)
+    val env = args(1)
+    val summary = args(2)
+    val messageSeq = new ArrayBuffer[String]
+    val configs = HdfsUtil.listSubPathsByType(config, "file", true)
+    configs.foreach(config => {
+      val args = Array(env, config)
+      val messages = Application.run(args)
+      messageSeq.appendAll(messages)
+    })
+    messageSeq.foreach(message => {
+      println(message)
+    })
+    HdfsUtil.deleteHdfsPath(summary)
+    HdfsUtil.appendContent(summary, messageSeq.mkString("\n"))
+  }
 
   def run(args: Array[String]): ArrayBuffer[String] = {
     if (args.length < 2) {
@@ -84,10 +95,10 @@ object Application extends Loggable {
         sys.exit(-5)
     }
     // dq app run
-    val (success,dqContext) = dqApp.run match {
-      case Success((result,dqContext)) =>
+    val (success, dqContext) = dqApp.run match {
+      case Success((result, dqContext)) =>
         info("process run result: " + (if (result) "success" else "failed"))
-        (result,dqContext)
+        (result, dqContext)
       case Failure(ex) =>
         error(s"process run error: ${ex.getMessage}", ex)
         if (dqApp.retryable) {

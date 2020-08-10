@@ -72,9 +72,8 @@ class ApplicationSpec extends FlatSpec with Matchers {
     messageSeq.foreach(message => {
       println(message)
     })
-    HdfsUtil.deleteHdfsPath("file:///Users/zhanwa01/hdfs/report/20200806.txt")
-    HdfsUtil.appendContent("file:///Users/zhanwa01/hdfs/report/20200806.txt", messageSeq.mkString("\n"))
-
+    HdfsUtil.deleteHdfsPath("file:///Users/zhanwa01/hdfs/report_summary/20200806.txt")
+    HdfsUtil.appendContent("file:///Users/zhanwa01/hdfs/report_summary/20200806.txt", messageSeq.mkString("\n"))
   }
 }
 
