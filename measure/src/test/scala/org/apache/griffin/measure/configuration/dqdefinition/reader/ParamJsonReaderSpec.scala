@@ -18,11 +18,10 @@ under the License.
 */
 package org.apache.griffin.measure.configuration.dqdefinition.reader
 
-import com.nielsen.verfication.measure.Launcher.warn
 import com.nielsen.verfication.measure.configuration.dqdefinition.DQConfig
 import com.nielsen.verfication.measure.configuration.dqdefinition.reader.{ParamJsonReader, ParamReader}
 import org.scalatest.{FlatSpec, Matchers}
-import com.nielsen.verfication.measure.{Application, Launcher}
+import com.nielsen.verfication.measure.Application
 import com.nielsen.verfication.measure.utils.HdfsUtil
 
 import scala.collection.mutable.ArrayBuffer

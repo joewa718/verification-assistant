@@ -55,7 +55,6 @@ object FSUtil extends Loggable {
   private def getConfiguration(): Configuration = {
     val conf = new Configuration()
     conf.setBoolean("dfs.support.append", true)
-//    conf.set("fs.defaultFS", "hdfs://localhost")    // debug in hdfs localhost env
     conf
   }
 

@@ -24,10 +24,6 @@ import com.nielsen.verfication.measure.configuration.enums.{BatchProcessType, Pr
 import com.nielsen.verfication.measure.datasource.DataSource
 import com.nielsen.verfication.measure.sink.{Sink, SinkFactory}
 import org.apache.spark.sql.{Encoders, SQLContext, SparkSession}
-import com.nielsen.verfication.measure.configuration.dqdefinition._
-import com.nielsen.verfication.measure.configuration.enums._
-import com.nielsen.verfication.measure.datasource._
-import com.nielsen.verfication.measure.sink.Sink
 
 import scala.collection.mutable.ArrayBuffer
 

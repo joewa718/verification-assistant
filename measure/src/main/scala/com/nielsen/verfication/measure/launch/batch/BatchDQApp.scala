@@ -60,7 +60,7 @@ case class BatchDQApp(allParam: GriffinConfig, messageSeq: ArrayBuffer[String]) 
     val conf = new SparkConf().setAppName(metricName)
     conf.setAll(sparkParam.getConfig)
     conf.set("spark.sql.crossJoin.enabled", "true")
-    //sparkSession = SparkSession.builder().config(conf).enableHiveSupport().getOrCreate()
+    sparkSession = SparkSession.builder().config(conf).enableHiveSupport().getOrCreate()
     sparkSession = SparkSession.builder().config(conf).getOrCreate()
     sparkSession.sparkContext.setLogLevel(sparkParam.getLogLevel)
     sqlContext = sparkSession.sqlContext

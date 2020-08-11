@@ -47,7 +47,7 @@ object Application extends Loggable {
     messageSeq.foreach(message => {
       println(message)
     })
-    HdfsUtil.deleteHdfsPath(summary)
+    info(messageSeq.mkString("\n"))
     HdfsUtil.appendContent(summary, messageSeq.mkString("\n"))
   }
 
