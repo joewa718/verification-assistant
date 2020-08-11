@@ -28,7 +28,6 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
 
 object FSUtil extends Loggable {
-
   private val fsMap: MutableMap[String, FileSystem] = MutableMap()
   private val defaultFS: FileSystem = FileSystem.get(getConfiguration)
 

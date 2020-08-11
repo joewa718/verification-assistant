@@ -23,6 +23,9 @@ import com.nielsen.verfication.measure.configuration.dqdefinition.{DQConfig, Env
 import com.nielsen.verfication.measure.configuration.enums.{BatchProcessType, ProcessType, StreamingProcessType}
 import com.nielsen.verfication.measure.launch.{DQApp, batch, streaming}
 import com.nielsen.verfication.measure.utils.HdfsUtil
+import org.apache.spark.SparkConf
+import org.apache.spark.sql.SparkSession
+
 import scala.collection.mutable.ArrayBuffer
 import scala.reflect.ClassTag
 import scala.util.{Failure, Success, Try}
@@ -44,10 +47,6 @@ object Application extends Loggable {
       val messages = Application.run(args)
       messageSeq.appendAll(messages)
     })
-    messageSeq.foreach(message => {
-      println(message)
-    })
-    info(messageSeq.mkString("\n"))
     HdfsUtil.appendContent(summary, messageSeq.mkString("\n"))
   }
 
