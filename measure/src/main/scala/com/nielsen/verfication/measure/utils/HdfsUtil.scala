@@ -22,14 +22,12 @@ import com.nielsen.verfication.measure.Loggable
 import org.apache.hadoop.fs.{FSDataInputStream, FSDataOutputStream, Path}
 
 object HdfsUtil extends Loggable {
-
   private val seprator = "/"
-
-  private def getFS(implicit path: Path) = FSUtil.getFileSystem(path.toString)
+  private def getFS() = FSUtil.getFileSystem()
 
   def existPath(filePath: String): Boolean = {
     try {
-      implicit val path = new Path(filePath)
+       val path = new Path(filePath)
       getFS.exists(path)
     } catch {
       case e: Throwable => false
@@ -42,20 +40,20 @@ object HdfsUtil extends Loggable {
   }
 
   def createFile(filePath: String): FSDataOutputStream = {
-    implicit val path = new Path(filePath)
+     val path = new Path(filePath)
     if (getFS.exists(path)) getFS.delete(path, true)
     getFS.create(path)
   }
 
   def appendOrCreateFile(filePath: String): FSDataOutputStream = {
-    implicit val path = new Path(filePath)
+     val path = new Path(filePath)
     if (getFS.getConf.getBoolean("dfs.support.append", false) && getFS.exists(path)) {
       getFS.append(path)
     } else createFile(filePath)
   }
 
   def openFile(filePath: String): FSDataInputStream = {
-    implicit val path = new Path(filePath)
+     val path = new Path(filePath)
     getFS.open(path)
   }
 
@@ -83,7 +81,7 @@ object HdfsUtil extends Loggable {
 
   def deleteHdfsPath(dirPath: String): Unit = {
     try {
-      implicit val path = new Path(dirPath)
+       val path = new Path(dirPath)
       if (getFS.exists(path)) getFS.delete(path, true)
     } catch {
       case e: Throwable => error(s"delete path [${dirPath}] error: ${e.getMessage}", e)
@@ -95,7 +93,7 @@ object HdfsUtil extends Loggable {
     : Iterable[String] = {
     if (existPath(dirPath)) {
       try {
-        implicit val path = new Path(dirPath)
+         val path = new Path(dirPath)
         val fileStatusArray = getFS.listStatus(path)
         fileStatusArray.filter { fileStatus =>
           subType match {

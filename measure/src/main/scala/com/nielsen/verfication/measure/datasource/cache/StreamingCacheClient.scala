@@ -81,7 +81,7 @@ trait StreamingCacheClient
   val deltaTimeRange: (Long, Long) = {
     def negative(n: Long): Long = if (n <= 0) n else 0
     param.get(_TimeRange) match {
-      case Some(seq: Seq[String]) =>
+      case Some(seq: Seq[String]@unchecked) =>
         val nseq = seq.flatMap(TimeUtil.milliseconds(_))
         val ns = negative(nseq.headOption.getOrElse(0))
         val ne = negative(nseq.tail.headOption.getOrElse(0))

@@ -33,9 +33,9 @@ object CacheResults extends Loggable {
     def olderThan(ut: Long): Boolean = updateTime < ut
     def update(ut: Long, r: Metric): Option[Metric] = {
       r match {
-        case m: result.T if (olderThan(ut)) =>
+        case m: result.T@unchecked if olderThan(ut) =>
           val ur = result.update(m)
-          if (result.differsFrom(ur)) Some(ur) else None
+          Some(ur).filter(result.differsFrom)
         case _ => None
       }
     }

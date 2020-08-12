@@ -22,7 +22,9 @@ import com.nielsen.verfication.measure.configuration.dqdefinition.reader.ParamRe
 import com.nielsen.verfication.measure.configuration.dqdefinition.{DQConfig, EnvConfig, GriffinConfig, Param}
 import com.nielsen.verfication.measure.configuration.enums.{BatchProcessType, ProcessType, StreamingProcessType}
 import com.nielsen.verfication.measure.launch.{DQApp, batch, streaming}
-import com.nielsen.verfication.measure.utils.HdfsUtil
+import com.nielsen.verfication.measure.utils.{FSUtil, HdfsUtil}
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 
